@@ -2,26 +2,17 @@ package sync.tobiasheine.eu.datasync.persistence.user;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class UserTable {
-    public static final String NAME = "users";
+import sync.tobiasheine.eu.datasync.persistence.Table;
 
-    public enum Column {
-        USER_ID,
-        NAME;
-    }
+public class UserTable extends Table {
 
-    public static String[] getAllColumns() {
-        final String[] columns = new String[Column.values().length];
+    public static final String TABLE_NAME = "users";
 
-        for (int i = 0; i < Column.values().length; i++) {
-            columns[i] = Column.values()[i].name();
-        }
-
-        return columns;
-    }
+    public static final String NAME = "name";
+    public static final String[] COLUMNS = new String[]{_ID, NAME};
 
     public static void createTable(final SQLiteDatabase sqLiteDatabase) {
-        final String statement = "create table " + UserTable.NAME + "(" + UserTable.Column.USER_ID + " integer primary key autoincrement, " + UserTable.Column.NAME
+        final String statement = "create table " + UserTable.TABLE_NAME + "(" + Table._ID + " integer primary key autoincrement, " + UserTable.NAME
                 + " text not null);";
         sqLiteDatabase.execSQL(statement);
     }

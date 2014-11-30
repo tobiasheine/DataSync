@@ -23,6 +23,8 @@ public interface IDataSource<ENTITY> {
 
     int updateAll(final ContentValues values, final String selection, final String[] selectionArgs);
 
+    ENTITY createEntity(ContentValues contentValues);
+
     void open();
 
     void close();

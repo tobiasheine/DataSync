@@ -11,19 +11,18 @@ import sync.tobiasheine.eu.datasync.persistence.user.UserDataSource;
 
 import static sync.tobiasheine.eu.datasync.persistence.user.UserDataSource.URI_CODE_USERS;
 import static sync.tobiasheine.eu.datasync.persistence.user.UserDataSource.URI_CODE_USERS_ID;
-import static sync.tobiasheine.eu.datasync.persistence.user.UserDataSource.USER_PATH;
 
 public class DataContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "eu.tobiasheine.datasync.contentprovider";
 
-    public static final Uri USER_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + USER_PATH);
+    public static final Uri USER_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + IUserDataSource.PATH);
 
     private static final UriMatcher URIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        URIMatcher.addURI(AUTHORITY, USER_PATH, URI_CODE_USERS);
-        URIMatcher.addURI(AUTHORITY, USER_PATH + "/#", URI_CODE_USERS_ID);
+        URIMatcher.addURI(AUTHORITY, UserDataSource.PATH, URI_CODE_USERS);
+        URIMatcher.addURI(AUTHORITY, UserDataSource.PATH + "/#", URI_CODE_USERS_ID);
     }
 
     private IUserDataSource userDataSource;

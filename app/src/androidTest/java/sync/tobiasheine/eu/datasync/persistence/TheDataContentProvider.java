@@ -25,9 +25,9 @@ public class TheDataContentProvider extends ProviderTestCase2<DataContentProvide
         insertUsers(asList("tobi"));
 
         // then
-        Cursor cursor = getMockContentResolver().query(DataContentProvider.USER_CONTENT_URI, UserTable.getAllColumns(), null, null, null);
+        Cursor cursor = getMockContentResolver().query(DataContentProvider.USER_CONTENT_URI, UserTable.COLUMNS, null, null, null);
         cursor.moveToFirst();
-        int nameColumnIndex = cursor.getColumnIndex(UserTable.Column.NAME.name());
+        int nameColumnIndex = cursor.getColumnIndex(UserTable.NAME);
         assertEquals("tobi", cursor.getString(nameColumnIndex));
     }
 
@@ -39,19 +39,18 @@ public class TheDataContentProvider extends ProviderTestCase2<DataContentProvide
         insertUsers(asList(tobi, paul));
 
         // when
-        Cursor cursor = getMockContentResolver().query(ContentUris.withAppendedId(DataContentProvider.USER_CONTENT_URI, 2), UserTable.getAllColumns(), null, null, null);
+        Cursor cursor = getMockContentResolver().query(ContentUris.withAppendedId(DataContentProvider.USER_CONTENT_URI, 2), new String[] {UserTable.NAME}, null, null, null);
         cursor.moveToFirst();
 
         // then
-        int nameColumnIndex = cursor.getColumnIndex(UserTable.Column.NAME.name());
-        assertEquals("paul", cursor.getString(nameColumnIndex));
+        assertEquals("paul", cursor.getString(0));
     }
 
     private void insertUsers(final List<String> userNames) throws RemoteException, OperationApplicationException {
         ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
 
         for (String name : userNames) {
-            ContentProviderOperation operation = ContentProviderOperation.newInsert(DataContentProvider.USER_CONTENT_URI).withValue(UserTable.Column.NAME.name(), name).build();
+            ContentProviderOperation operation = ContentProviderOperation.newInsert(DataContentProvider.USER_CONTENT_URI).withValue(UserTable.NAME, name).build();
             operations.add(operation);
         }
         getMockContentResolver().applyBatch(DataContentProvider.AUTHORITY, operations);

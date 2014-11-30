@@ -41,7 +41,7 @@ public class TheUserDataSource extends AndroidTestCase {
         userDataSource.createUser("Tom");
 
         // when
-        List<UserEntity> allUsers = userDataSource.getAllEntities(UserTable.getAllColumns(), null, null, null);
+        List<UserEntity> allUsers = userDataSource.getAllEntities(UserTable.COLUMNS, null, null, null);
 
         // then
         assertEquals(2, allUsers.size());
@@ -53,7 +53,7 @@ public class TheUserDataSource extends AndroidTestCase {
         userDataSource.createUser("Tom");
 
         // when
-        Cursor userById = userDataSource.cursorOnEntityById("2", new String[]{UserTable.Column.NAME.name()});
+        Cursor userById = userDataSource.cursorOnEntityById("2", new String[]{UserTable.NAME});
         userById.moveToFirst();
 
         // then
@@ -67,7 +67,7 @@ public class TheUserDataSource extends AndroidTestCase {
         userDataSource.createUser("Tom");
 
         // when
-        Cursor list = userDataSource.cursorOnAllEntities(UserTable.getAllColumns(), null, null, null);
+        Cursor list = userDataSource.cursorOnAllEntities(UserTable.COLUMNS, null, null, null);
 
         // then
         assertEquals(2, list.getCount());
@@ -76,13 +76,13 @@ public class TheUserDataSource extends AndroidTestCase {
     public void testInsertEntity() throws Exception {
         // given
         ContentValues contentValues = new ContentValues();
-        contentValues.put(UserTable.Column.NAME.name(), "Tobi");
+        contentValues.put(UserTable.NAME, "Tobi");
 
         // when
         Uri uriToEntity = userDataSource.insertEntity(contentValues);
 
         // then
-        assertEquals(Uri.parse(IUserDataSource.USER_PATH + "/1"), uriToEntity);
+        assertEquals(Uri.parse(IUserDataSource.PATH + "/1"), uriToEntity);
     }
 
     public void testDeleteEntityById() throws Exception {
@@ -94,7 +94,7 @@ public class TheUserDataSource extends AndroidTestCase {
         userDataSource.deleteEntity("1", null, null);
 
         // then
-        Cursor cursor = userDataSource.cursorOnAllEntities(new String[]{UserTable.Column.NAME.name()}, null, null, null);
+        Cursor cursor = userDataSource.cursorOnAllEntities(new String[]{UserTable.NAME}, null, null, null);
         assertEquals(1, cursor.getCount());
         cursor.moveToFirst();
         String userName = cursor.getString(0);
@@ -110,7 +110,7 @@ public class TheUserDataSource extends AndroidTestCase {
         userDataSource.deleteAll(null, null);
 
         // then
-        Cursor cursor = userDataSource.cursorOnAllEntities(UserTable.getAllColumns(), null, null, null);
+        Cursor cursor = userDataSource.cursorOnAllEntities(UserTable.COLUMNS, null, null, null);
         assertTrue(cursor.isAfterLast());
     }
 
@@ -121,11 +121,11 @@ public class TheUserDataSource extends AndroidTestCase {
 
         // when
         ContentValues contentValues = new ContentValues();
-        contentValues.put(UserTable.Column.NAME.name(), "Peter");
+        contentValues.put(UserTable.NAME, "Peter");
         userDataSource.updateEntity("2", contentValues, null, null);
 
         // then
-        Cursor cursor = userDataSource.cursorOnEntityById("2", new String[]{UserTable.Column.NAME.name()});
+        Cursor cursor = userDataSource.cursorOnEntityById("2", new String[]{UserTable.NAME});
         cursor.moveToFirst();
         assertEquals("Peter", cursor.getString(0));
     }
