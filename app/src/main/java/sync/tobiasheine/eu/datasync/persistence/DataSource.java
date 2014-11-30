@@ -20,9 +20,17 @@ public abstract class DataSource<ENTITY> implements IDataSource<ENTITY> {
 
     protected abstract ENTITY cursorToEntity(final Cursor cursor);
 
+    protected abstract void checkColumns(String[] projection);
+
+    protected abstract String getTableName();
+
+    protected abstract String[] getAllColumns();
+
     @Override
     public void open() throws SQLException {
-        sqLiteDatabase = dbHelper.getWritableDatabase();
+        if (sqLiteDatabase == null) {
+            sqLiteDatabase = dbHelper.getWritableDatabase();
+        }
     }
 
     @Override

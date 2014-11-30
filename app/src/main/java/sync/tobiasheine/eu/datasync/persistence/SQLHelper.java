@@ -17,7 +17,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        createUserTable(db);
+        UserTable.createTable(db);
     }
 
     @Override
@@ -25,9 +25,5 @@ public class SQLHelper extends SQLiteOpenHelper {
         //nop
     }
 
-    private void createUserTable(final SQLiteDatabase sqLiteDatabase) {
-        final String statement = "create table " + UserTable.NAME + "(" + UserTable.Column.USER_ID + " integer primary key autoincrement, " + UserTable.Column.NAME
-                + " text not null);";
-        sqLiteDatabase.execSQL(statement);
-    }
+
 }

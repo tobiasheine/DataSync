@@ -1,5 +1,7 @@
 package sync.tobiasheine.eu.datasync.persistence.user;
 
+import android.database.sqlite.SQLiteDatabase;
+
 public class UserTable {
     public static final String NAME = "users";
 
@@ -16,6 +18,12 @@ public class UserTable {
         }
 
         return columns;
+    }
+
+    public static void createTable(final SQLiteDatabase sqLiteDatabase) {
+        final String statement = "create table " + UserTable.NAME + "(" + UserTable.Column.USER_ID + " integer primary key autoincrement, " + UserTable.Column.NAME
+                + " text not null);";
+        sqLiteDatabase.execSQL(statement);
     }
 
 }

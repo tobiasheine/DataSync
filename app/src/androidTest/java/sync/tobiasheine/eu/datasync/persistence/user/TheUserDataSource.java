@@ -1,5 +1,8 @@
 package sync.tobiasheine.eu.datasync.persistence.user;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 
@@ -24,7 +27,7 @@ public class TheUserDataSource extends AndroidTestCase {
         userDataSource.close();
     }
 
-    public void testCreatesAUser() throws Exception {
+    public void testCreateUser() throws Exception {
         // when
         UserEntity tobi = userDataSource.createUser("Tobi");
 
@@ -32,15 +35,98 @@ public class TheUserDataSource extends AndroidTestCase {
         assertEquals("Tobi", tobi.getName());
     }
 
-    public void testReturnsAllUsers() throws Exception {
+    public void testGetAllEntities() throws Exception {
         // given
         userDataSource.createUser("Tobi");
         userDataSource.createUser("Tom");
 
         // when
-        List<UserEntity> allUsers = userDataSource.getAll();
+        List<UserEntity> allUsers = userDataSource.getAllEntities(UserTable.getAllColumns(), null, null, null);
 
         // then
         assertEquals(2, allUsers.size());
+    }
+
+    public void testCursorOnUserById() throws Exception {
+        // given
+        userDataSource.createUser("Tobi");
+        userDataSource.createUser("Tom");
+
+        // when
+        Cursor userById = userDataSource.cursorOnEntityById("2", new String[]{UserTable.Column.NAME.name()});
+        userById.moveToFirst();
+
+        // then
+        String userName = userById.getString(0);
+        assertEquals("Tom", userName);
+    }
+
+    public void testCursorOnAll() throws Exception {
+        // given
+        userDataSource.createUser("Tobi");
+        userDataSource.createUser("Tom");
+
+        // when
+        Cursor list = userDataSource.cursorOnAllEntities(UserTable.getAllColumns(), null, null, null);
+
+        // then
+        assertEquals(2, list.getCount());
+    }
+
+    public void testInsertEntity() throws Exception {
+        // given
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(UserTable.Column.NAME.name(), "Tobi");
+
+        // when
+        Uri uriToEntity = userDataSource.insertEntity(contentValues);
+
+        // then
+        assertEquals(Uri.parse(IUserDataSource.USER_PATH + "/1"), uriToEntity);
+    }
+
+    public void testDeleteEntityById() throws Exception {
+        // given
+        userDataSource.createUser("Tobi");
+        userDataSource.createUser("Tom");
+
+        // when
+        userDataSource.deleteEntity("1", null, null);
+
+        // then
+        Cursor cursor = userDataSource.cursorOnAllEntities(new String[]{UserTable.Column.NAME.name()}, null, null, null);
+        assertEquals(1, cursor.getCount());
+        cursor.moveToFirst();
+        String userName = cursor.getString(0);
+        assertEquals("Tom", userName);
+    }
+
+    public void testDeleteAll() throws Exception {
+        // given
+        userDataSource.createUser("Tobi");
+        userDataSource.createUser("Tom");
+
+        // when
+        userDataSource.deleteAll(null, null);
+
+        // then
+        Cursor cursor = userDataSource.cursorOnAllEntities(UserTable.getAllColumns(), null, null, null);
+        assertTrue(cursor.isAfterLast());
+    }
+
+    public void testUpdateById() throws Exception {
+        // given
+        userDataSource.createUser("Tobi");
+        userDataSource.createUser("Tom");
+
+        // when
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(UserTable.Column.NAME.name(), "Peter");
+        userDataSource.updateEntity("2", contentValues, null, null);
+
+        // then
+        Cursor cursor = userDataSource.cursorOnEntityById("2", new String[]{UserTable.Column.NAME.name()});
+        cursor.moveToFirst();
+        assertEquals("Peter", cursor.getString(0));
     }
 }
