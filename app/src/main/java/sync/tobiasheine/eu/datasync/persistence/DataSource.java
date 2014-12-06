@@ -9,7 +9,11 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+
+import sync.tobiasheine.eu.datasync.persistence.post.PostTable;
 
 public abstract class DataSource<ENTITY> implements IDataSource<ENTITY> {
 
@@ -23,11 +27,11 @@ public abstract class DataSource<ENTITY> implements IDataSource<ENTITY> {
 
     protected abstract ENTITY cursorToEntity(final Cursor cursor);
 
-    protected abstract void checkColumns(String[] projection);
-
     protected abstract String getTableName();
 
     protected abstract String getUriPath();
+
+    protected abstract String[] getAllColumns();
 
     @Override
     public List<ENTITY> getAllEntities(final String[] projection, final String selection, final String[] selectionArgs, final String sortOrder) {
@@ -155,5 +159,16 @@ public abstract class DataSource<ENTITY> implements IDataSource<ENTITY> {
         dbHelper.close();
     }
 
-    protected abstract String[] getAllColumns();
+    protected void checkColumns(String[] projection) {
+        String[] available = getAllColumns();
+
+        if (projection != null) {
+            HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
+            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
+            // check if all columns which are requested are available
+            if (!availableColumns.containsAll(requestedColumns)) {
+                throw new IllegalArgumentException("Unknown columns in projection");
+            }
+        }
+    }
 }

@@ -31,20 +31,6 @@ public class UserDataSource extends DataSource<UserEntity> implements IUserDataS
     }
 
     @Override
-    protected void checkColumns(String[] projection) {
-        String[] available = UserTable.COLUMNS;
-
-        if (projection != null) {
-            HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
-            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
-            // check if all columns which are requested are available
-            if (!availableColumns.containsAll(requestedColumns)) {
-                throw new IllegalArgumentException("Unknown columns in projection");
-            }
-        }
-    }
-
-    @Override
     protected String getTableName() {
         return UserTable.TABLE_NAME;
     }

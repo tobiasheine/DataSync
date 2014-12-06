@@ -40,6 +40,7 @@ public class TheDataContentProvider extends ProviderTestCase2<DataContentProvide
 
         // when
         Cursor cursor = getMockContentResolver().query(ContentUris.withAppendedId(DataContentProvider.USER_CONTENT_URI, 2), new String[] {UserTable.NAME}, null, null, null);
+
         cursor.moveToFirst();
 
         // then

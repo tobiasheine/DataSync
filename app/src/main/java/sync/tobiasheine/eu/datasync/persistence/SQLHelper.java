@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import sync.tobiasheine.eu.datasync.persistence.post.PostTable;
 import sync.tobiasheine.eu.datasync.persistence.user.UserTable;
 
 public class SQLHelper extends SQLiteOpenHelper {
@@ -18,6 +19,7 @@ public class SQLHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         UserTable.createTable(db);
+        PostTable.createTable(db);
     }
 
     @Override
